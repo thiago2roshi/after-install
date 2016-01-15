@@ -33,7 +33,7 @@ function menuPrincipal {
                    --title="$TITLE" \
                    --menu="$MENU"
                    $HEIGHT $WIDTH $CHOICE_WEIDTH \
-                   "${OPTIONS[@]" \
+                   "${OPTIONS[@]}" \
                    2>&1 > /dev/tty)
    clear
 
@@ -42,7 +42,9 @@ function menuPrincipal {
       2 )
       3 )
       0 ) break;;
-      * ) echo "Opção invalida, tente denovo...";continue;;
+      * ) 
+         echo "Opção invalida, tente denovo";
+         continue;;
    esac
 }
 
