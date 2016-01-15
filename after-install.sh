@@ -1,12 +1,7 @@
 #!/bin/bash
-
-HEIGHT=15
-WIDTH=40
-CHOICE_HEIGHT=4
-BACKTITLE="After-Install by @thiagoroshi"
-#echo "##########################"
-#echo "## Script After-install ##"
-#echo "##########################"
+##########################
+## Script After-install ##
+##########################
 
 # Confirmando se o script esta rodando como ROOT
 if [[ $EUID -ne 0 ]]; then
@@ -15,37 +10,36 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 # menu inicial para seleção de programas para instalar
-function menuPrincipal {
+function menuPrincipal() {
    #echo "=========================="
    #echo "= Selecione os Programas ="
    #echo "=========================="
-   
-   title="After-Install"   
-   MENU="Selecione os software para serem instalados:"
-   OPTIONS=(
-      1 "Essencial" 
-      2 "Terminal Guy" 
-      3 "Media Player" 
-      0 "Quit")
-      
-   CHOICE=$(dialog --clear \
-                   --backtitle="$BACKTITLE" \
-                   --title="$TITLE" \
-                   --menu="$MENU"
-                   $HEIGHT $WIDTH $CHOICE_WEIDTH \
-                   "${OPTIONS[@]}" \
-                   2>&1 > /dev/tty)
-   clear
-
-   case
-      1 ) 
-      2 )
-      3 )
-      0 ) break;;
-      * ) 
-         echo "Opção invalida, tente denovo";
-         continue;;
-   esac
+TITLE="After-Install"
+BACKTITLE="After-Install by @thiagoroshi"
+MSG="Selecione os software para serem instalados:"
+OPTIONS=(
+       1 "Option 1" 
+       2 "Option 2" 
+       2 "Option 3" 
+       0 "Quit")
+  #dialog --backtitle "$__backtitle" --cr-wrap --no-collapse --msgbox "$msg" 20 60 >/dev/tty
+CHOICES=$( dialog --clear\
+                  --stdout \
+                  --backtitle "$BACKTITLE" \
+                  --title "$TITLE" \
+                  --menu "$MSG" \
+                  0 0 0 \
+                  "${OPTIONS[@]}")
+clear
+for CHOICE in $CHOICES
+do
+  case $CHOICE in
+      1 ) echo "testando botoes";;
+      2 ) echo "testando botoes";;
+      3 ) echo "testando botoes";;
+      0 ) echo "vlw";;
+  esac
+done
 }
 
 echo ">> iniciando update de repositorios ..."
