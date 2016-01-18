@@ -1,56 +1,112 @@
 #!/bin/bash
-##########################
-## Script After-install ##
-##########################
+#
+# simple bash script to re-install all the programmes after a fresh install
+# for debian/ubuntu
+#
+# Tranks: Wayno Guerrini v2.0 - www.old.pkill-9.com
+#
+# 
 
-# Confirmando se o script esta rodando como ROOT
-if [[ $EUID -ne 0 ]]; then
-   echo "O script precisa de acesso ROOT. Execute novamente com SUDO." 1>&2
-   exit 100
-fi
+function dialogMSG()
+{
+   TITLE=$1
+   MSG=$2
 
-# menu inicial para seleção de programas para instalar
-function menuPrincipal() {
-   #echo "=========================="
-   #echo "= Selecione os Programas ="
-   #echo "=========================="
-TITLE="After-Install"
-BACKTITLE="After-Install by @thiagoroshi"
-MSG="Selecione os software para serem instalados:"
-OPTIONS=(
-       1 "Option 1" 
-       2 "Option 2" 
-       2 "Option 3" 
-       0 "Quit")
-  #dialog --backtitle "$__backtitle" --cr-wrap --no-collapse --msgbox "$msg" 20 60 >/dev/tty
-CHOICES=$( dialog --clear\
-                  --stdout \
-                  --backtitle "$BACKTITLE" \
-                  --title "$TITLE" \
-                  --menu "$MSG" \
-                  0 0 0 \
-                  "${OPTIONS[@]}")
-clear
-for CHOICE in $CHOICES
-do
-  case $CHOICE in
-      1 ) echo "testando botoes";;
-      2 ) echo "testando botoes";;
-      3 ) echo "testando botoes";;
-      0 ) echo "vlw";;
-  esac
-done
+   dialog               \
+      --clear           \
+      --title "$TITLE"  \
+      --msgbox "$MSG"   \
+      0 0
+   clear
+}
+function dialogYN()
+{
+   MSG=$1
+   
+   dialog            \
+      --clear        \
+      --yesno "$MSG" \
+      0 0
+   clear
+}
+function dialogSelect()
+{
+   TITLE=$1
+   MSG=$2
+
+   dialog                 \
+      --clear             \
+      --title $TITLE      \
+      --yesno  $MSG"\n\n" \
+      0 0
+   clear
+}
+function justDoIt()
+{   
+   if [[ $EUID -ne 0 ]]; then
+      dialogMSG               \
+         "Opa, temos um erro" \
+         "O script precisa de acesso ROOT. Execute novamente com SUDO."
+      exit 100
+   fi
+   
+   dialogMSG                              \
+      "Pos Instalacao de ambiente Ubuntu" \
+      "Let's GO"
 }
 
-echo ">> iniciando update de repositorios ..."
-apt-get update 
-echo ">> repositorios atualizados"
-
-read -p ">> deseja atualizar os repositorios? [y/N]" confirm
-   case $confirm in
-      y|Y ) apt-get upgrade -y;;
-      n|N ) echo "okay... então vai sem upgrade ( ; _ ;)";;
-      * ) echo "apenas 'Y, y, N, n' ";;
-   esac
-
-principal()
+function install()
+{
+   PCT=$1
+   DESC=$2
+   printf '\n ======================================= \n'
+   # Dando retorno do pacote a ser instalado
+   echo 'instalando: ' $PCT $DESC
+   printf '\n'
+   apt-get install -y $PCT
+   #
+   # $? is the return code from the previous command in this case the
+   # apt-get
+   retval=$?
+   # check the return code from the apt-get if it's okay, continue on,
+   # if it's not zero, tell me the return code, but continue on
+   #
+   if [ $retval -ne 0 ] ; then
+   echo '>>>>>failed rc =' $retval
+   fi
+}
+# 
+# Atualizando repositorios e aplicacoes
+#       antes de comecar a instalar
+function updateSystem()
+{
+   TITLE="Pre-Instalação"
+   dialogMSG  \
+       $TITLE \
+      "Iniciando update de repositorios ..."
+   echo "=================================="
+   printf '\n'
+      apt-get update 
+   
+   dialogMSG  \
+       $TITLE \
+      "Repositorios Atualizados"
+   
+   dialogYN  \
+      "deseja atualizar os repositorios?"
+      
+   if [[ $? = 0 ]]; then
+      echo "=================================="
+      printf '\n'
+         apt-get upgrade -y   
+   else
+      dialogMSG \
+         $TITLE \
+         "okay... então vai sem upgrade ( ; _ ;)"
+   fi
+}
+#========================
+# Agora começa a Bagaça
+#========================
+justDoIt
+updateSystem
