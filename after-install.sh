@@ -4,9 +4,9 @@
 # for debian/ubuntu
 #
 # Tranks: Wayno Guerrini v2.0 - www.old.pkill-9.com
+##
+# Helpers Functions
 #
-# 
-
 function dialogMSG()
 {
    TITLE=$1
@@ -29,18 +29,7 @@ function dialogYN()
       0 0
    clear
 }
-function dialogSelect()
-{
-   TITLE=$1
-   MSG=$2
 
-   dialog                 \
-      --clear             \
-      --title $TITLE      \
-      --yesno  $MSG"\n\n" \
-      0 0
-   clear
-}
 function justDoIt()
 {   
    if [[ $EUID -ne 0 ]]; then

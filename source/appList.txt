@@ -1,0 +1,5 @@
+git "temos que versionar" 
+zsh "afinal para que o Bash"
+mpd "Servidor de Musicas - Terminal"
+ncmpcpp "Music Player de Terminal - MPD"
+mpv "player de terminal - porque será?"
