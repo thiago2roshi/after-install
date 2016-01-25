@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 #
 # simple bash script to re-install all the programmes after a fresh install
 # for debian/ubuntu
@@ -7,7 +7,9 @@
 #         mcobit - RetrOsmc 
 ##
 # Importando helpers
-source ./source/helpers.sh
+PWD=$(pwd)
+source $PWD/source/helpers.sh
+source $PWD/source/appPerfil.sh
 
 function justDoIt()
 {   
@@ -33,10 +35,11 @@ function updateSystem()
    dialogMSG  \
        $TITLE \
       "primeiro, atualizar repositorios "
-   
-   apt-get update 2>&1 \
-         | dialogInfo \
-               $TITLE \
+   # adicionado o "&" para o SPINNER
+   apt-get update 2>&1 & |\
+        spinner $!
+        | dialogInfo \
+              $TITLE \
                "Atualizando repositorios..."
    
    dialogMSG  \
@@ -56,26 +59,12 @@ function updateSystem()
             -oP "(\d+(\.\d+)?(?=%))" \
          | dialogGauge           \
             "Atualizando Pacotes" \
-            "\n Atualizando ... \n"
+            "Atualizando ..."
    else
       dialogMSG \
          $TITLE \
          "okay... então vai sem upgrade ( ; _ ;)"
    fi
-}
-##
-# Menu Principal, vai!
-function menuPrincipal()
-{
-   TITLE="Menu Principal"
-   MSG="Bora Comecar a festa"
-   ###########################
-  # OPT=$(cat appList.txt) ## testando funcao   
-   ###########################
-   dialogChecklist $TITLE $MSG ### POG
-       
-   
-   
 }
 ## Iniciando as instalacoes
 #   Bora comecar a festa
@@ -104,5 +93,19 @@ function install()
 # Agora começa a Bagaça
 #========================
 justDoIt
-#updateSystem
-menuPrincipal
+updateSystem
+
+#while :
+ #   do
+    #menuPrincipal
+    #dialogMenu-perfil
+    CMD=(dialog --stdout --title "$TITLE" --checklist "$MSG" 0 0 0) 
+    OPT=(git "temos que versionar" off
+         zsh "afinal para que o Bash"  off
+         mpd "Servidor de Musicas - Terminal"  off
+         ncmpcpp "Music Player de Terminal - MPD"  off
+         mpv "player de terminal - porque será?"  off)
+    DIAL=$("${CMD[@]}" "${OPT[@]}" 2>&1 >/dev/tty)
+    clear
+  #  exit 0
+#done

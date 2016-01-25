@@ -69,10 +69,8 @@ function install()
 #       antes de comecar a instalar
 function updateSystem()
 {
-   TITLE="Pre-Instalação"
-   dialogMSG  \
-       $TITLE \
-      "Iniciando update de repositorios ..."
+  
+   echo "Iniciando update de repositorios ..."
    echo "=================================="
    printf '\n'
       apt-get update 
